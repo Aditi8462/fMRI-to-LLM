@@ -1,0 +1,2 @@
+attribute_name,description,data_type,example_value,unit
+label,Describes the trial type shown during each time interval during the fMRI data collection,string,correct classification of single-task items,type of task (and feedback)

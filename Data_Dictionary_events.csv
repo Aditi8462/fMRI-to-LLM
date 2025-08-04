@@ -1,0 +1,4 @@
+attribute_name,description,data_type,example_value,unit
+onset,The timewhen each event (trial) begins relative to the start of the scan,float,11.627,seconds
+duration,How long the total event lasts (the task has a set time),float,2.5,seconds
+trial_type,The type of task conducted and if feedback was provided (the participant knows if they got it right or wrong),string,correct classification of single-task items,type of task (and feedback)
