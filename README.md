@@ -30,10 +30,11 @@ Project Overview:
     
     - Expected Outputs:
         - \data\extracted: 
-            - Extracted events.tsv (trial information) and nii.gz (fMRI signal)
+            - Extracted events.tsv (trial information) and nii.gz (fMRI signal) (nii.gz too big - not in github)
         - \data\processed:
-            - Preprocessed voxel_vs_time in 2D numpy array and labels of trial type for prediction model
-            - Preprocessed fMRI BOLD signal data
+            - Preprocessed voxel_vs_time in 2D numpy array and labels of trial type for prediction model (too big - not in github)
+            - Preprocessed fMRI BOLD signal data (too big - not in github)
+            - labels.csv (trial type)
         - \data\outputs: 
             - test predictions from decision tree model
             - evaluation metrics (accuracy, precision, recall) - how accurate the fMRI BOLD signal is to its classification
