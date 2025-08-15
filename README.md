@@ -3,7 +3,6 @@ Final project for INST414
 
 Project Overview:
     - Business Problem: Can we use machine learning models to detect mental and cognitive states (behavioral responses) from preprocessed fMRI brain imaging data?
-
     - Datasets Used:
         Dataset link: https://www.openfmri.org/dataset/ds000011/
         Training on classifying objects and counting tone, 4 different tasks:
@@ -16,6 +15,7 @@ Project Overview:
             - Classification probe without feedback: Similar to classification learning task, "preformed after receiving training in the classification learning task. It is similar to the classification learning task but in this task the subject does not receive feedback."
 
         For Part 2 of the Final Project, I focused on the 'Classification probe without feedback' task, specifically the fMRI BOLD signal data and it's corresponding events.tsv outlining duration and type of trials throughout the task for participant 1 (sub-01)
+
     - Techniques:
         - Nilearn:
             - load fMRI BOLD signal data
@@ -25,22 +25,34 @@ Project Overview:
             - To use train_test_split for predictions
             - accuracy_score, recall_score, precision_scroll to evaluate metrics of model
             - plot_tree() to visualize Decision Tree
-        - Matplotlib.pyplot
+        - Matplotlib.pyplot:
             - To plot preprocessed results (formated for z-score normalization)
+        - Joblib:
+            - To save the trained Decision Tree Classifier model for reproducibility through the data science pipeline
+        - Seaborn:
+            - To plot additional visualizations that help explain the business problem
+        - Logging: 
+            - For error handling
     
     - Expected Outputs:
         - \data\extracted: 
             - Extracted events.tsv (trial information) and nii.gz (fMRI signal) (nii.gz too big - not in github)
         - \data\processed:
-            - Preprocessed voxel_vs_time in 2D numpy array and labels of trial type for prediction model (too big - not in github)
-            - Preprocessed fMRI BOLD signal data (too big - not in github)
+            - task_correlation.csv - correlation values for voxels and the selected trial task
+            - mean_bold.csv - mean BOLD signal over the entire scan
+            - mean_bold_per_trial.csv - mean BOLD signal per voxel for each trial (for visualization)
+            - X.npy - 2D Numpy array of voxel vs time
+            - y.csv - labels of trial type matching the X.npy rows
+            - Preprocessed fMRI BOLD signal data (npy) and (.nii.gz) file (too big - not in github)
             - labels.csv (trial type)
         - \data\outputs: 
-            - test predictions from decision tree model
-            - evaluation metrics (accuracy, precision, recall) - how accurate the fMRI BOLD signal is to its classification
-            - Decision tree model
+            - test_predictions.csv - test predictions from decision tree model
+            - evaluation_metrics.csv - evaluation metrics (accuracy, precision, recall) - how accurate the fMRI BOLD signal is to its classification
+            - decision_tree_plot - Decision tree model
             - Mean signal over time of preprocessed fMRI data
-            NOTE: This shows how well the model predicted the trial labels at each timepoint, it is still rough and I am still working on how to add to the code to correlate how strongly a voxel signal correlates to a specific task
+            - confusion_matrix.png - how well the model predicts different classes
+            - Mean BOLD brain map with locations of major activity
+            - Mean BOLD signal categorized to trial type 
 
 Setup: 
     - Clone repository on VS Code, and input github HTTPS link to search bar to clone. 
@@ -54,9 +66,13 @@ Setup:
         - matplotlib.pyplot: pip install matplotlib
         - os: Available by default (NO installation needed)
         - sickit-learn (sklearn): pip install scikit-learn
+        - joblib: pip install joblib
+        - Seaborn: pip install seaborn
+        - logging: pip install logging
 
 Running the Project:
-    - Download Dataset from OpenfMRI (link above) and download Raw AWS data. Use personal file directory to use nii.gz and their corresponding events.tsv files, and COPY files to \data\extracted so you can pull them directly without needing local directory (change those parts of the code, required in extract.py only)
+    - Download Dataset from OpenfMRI (link above) and download Raw AWS data. Use personal file directory to use nii.gz and their corresponding events.tsv files, and COPY files to \data\raw so you can pull them directly without needing local directory 
+        -  Once in data/raw, the data can run through each step of the pipeline dynamically
     - Run main.py, and observe outputs in \data folders
 
 Code Package Structure:
