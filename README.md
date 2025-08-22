@@ -51,7 +51,7 @@ Project Overview:
             - decision_tree_plot - Decision tree model
             - Mean signal over time of preprocessed fMRI data
             - confusion_matrix.png - how well the model predicts different classes
-            - Mean BOLD brain map with locations of major activity
+            - Mean BOLD brain map with location of major activity
             - Mean BOLD signal categorized to trial type 
 
 Setup: 
@@ -71,9 +71,8 @@ Setup:
         - logging: pip install logging
 
 Running the Project:
-    - Download Dataset from OpenfMRI (link above) and download Raw AWS data. Use personal file directory to use nii.gz and their corresponding events.tsv files, and COPY files to \data\raw so you can pull them directly without needing local directory 
-        -  Once in data/raw, the data can run through each step of the pipeline dynamically
-    - Run main.py, and observe outputs in \data folders
+    - Run main.py, it will automatically download the data in a new directory created in "extract.py" script. The pipeline is fully automated
+    - Observe outputs in \data folders
 
 Code Package Structure:
     - \analysis

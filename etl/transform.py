@@ -9,14 +9,12 @@ Imports:
 Outputs: 
     - Saves preprocessed fMRI BOLD signal data (as a 2D Numpy array)
     - Saves preprocessd fMRI BOLD signal data in original format (4D spatial data)
-
-Part 3 Additions: 
     - Saves X (voxel vs time) and y (labels) for analysis and evaluation
     - Compute mean BOLD signal per voxel for reference
     - Compute correlations between mean BOLD and trial types
     - Aggregate the mean BOLD signal per trial type (important to answer business problem)
     - Filters out timepoints where the participant was not doing a task (rest) to prevent overfitting
-    
+
 Run main.py to execute this script
 '''
 import os
@@ -27,7 +25,12 @@ from nilearn import masking
 from nilearn.image import load_img
 import logging
 
-def transform_data(SUBJECT, TASK, save_csv=True):  # Aligns with main.py so everything is logged in pipeline.log file
+def transform_data(save_csv=True):  # Aligns with main.py so everything is logged in pipeline.log file
+    """
+    Transforms the extracted fMRI data using NiftiMasker and aligns with events.tsv labels.
+    Computes correlations and aggregates mean BOLD per trial type.
+    Saves X and y files for analysis and evaluation.
+    """
     try:
         logging.info("Starting data transformation")
 
@@ -37,10 +40,10 @@ def transform_data(SUBJECT, TASK, save_csv=True):  # Aligns with main.py so ever
 
         # Paths to extracted fMRI data and events TSV
         extracted_path = os.path.join('data', 'extracted')
-        events_path = os.path.join(extracted_path, f'{SUBJECT}_{TASK}_events.tsv')
+        events_path = os.path.join(extracted_path, "sub-01_task-Classificationprobewithoutfeedback_events.tsv")
         events = pd.read_csv(events_path, sep='\t')
 
-        fMRI_file = os.path.join(extracted_path, f'{SUBJECT}_{TASK}_bold.nii.gz')
+        fMRI_file = os.path.join(extracted_path, "sub-01_task-Classificationprobewithoutfeedback_bold.nii.gz")
         fMRI_img = load_img(fMRI_file)  # Load the extracted fMRI image
 
         # Create a brain mask to determine which voxels belong to the brain
@@ -63,14 +66,14 @@ def transform_data(SUBJECT, TASK, save_csv=True):  # Aligns with main.py so ever
 
         # Save the preprocessed 4D image
         preprocessed_img = masker.inverse_transform(voxel_vs_time)
-        preprocessed_file = os.path.join(processed_path, f'{SUBJECT}_{TASK}_preprocessed.nii.gz')
+        preprocessed_file = os.path.join(processed_path, "sub-01_task-Classificationprobewithoutfeedback_preprocessed.nii.gz")
         preprocessed_img.to_filename(preprocessed_file)
         logging.info(f"Saved preprocessed NIfTI: {preprocessed_file}")
 
         # Compute mean BOLD signal per voxel for reference
         mean_signal = voxel_vs_time.mean(axis=1)
         tidy_df = pd.DataFrame({'mean_bold': mean_signal})
-        tidy_csv = os.path.join(processed_path, f'{SUBJECT}_{TASK}_mean_bold.csv')
+        tidy_csv = os.path.join(processed_path, "sub-01_task-Classificationprobewithoutfeedback_mean_bold.csv")
         tidy_df.to_csv(tidy_csv, index=False)
         logging.info(f"Tidy CSV saved: {tidy_csv}")
 
@@ -93,8 +96,8 @@ def transform_data(SUBJECT, TASK, save_csv=True):  # Aligns with main.py so ever
         y_filtered = timepoint_labels[trial_mask]
 
         # Save filtered X and y for modeling
-        np.save(os.path.join(processed_path, f"{SUBJECT}_{TASK}_X.npy"), X_filtered)
-        pd.DataFrame({"label": y_filtered}).to_csv(os.path.join(processed_path, f"{SUBJECT}_{TASK}_y.csv"), index=False)
+        np.save(os.path.join(processed_path, "sub-01_task-Classificationprobewithoutfeedback_X.npy"), X_filtered)
+        pd.DataFrame({"label": y_filtered}).to_csv(os.path.join(processed_path, "sub-01_task-Classificationprobewithoutfeedback_y.csv"), index=False)
 
         # Compute correlations between mean BOLD and trial types
         correlations = {}
@@ -105,7 +108,7 @@ def transform_data(SUBJECT, TASK, save_csv=True):  # Aligns with main.py so ever
             correlations[trial_type] = np.corrcoef(mean_signal[trial_mask_type], np.ones(trial_mask_type.sum()))[0, 1]
 
         correlation_df = pd.DataFrame.from_dict(correlations, orient='index', columns=['correlation'])
-        correlation_csv_path = os.path.join(processed_path, f'{SUBJECT}_{TASK}_bold_task_correlation.csv')
+        correlation_csv_path = os.path.join(processed_path, 'sub-01_task-Classificationprobewithoutfeedback_bold_task_correlation.csv')
         if save_csv:
             correlation_df.to_csv(correlation_csv_path)
         logging.info(f"Correlation CSV saved: {correlation_csv_path}")
@@ -120,7 +123,7 @@ def transform_data(SUBJECT, TASK, save_csv=True):  # Aligns with main.py so ever
             mean_per_trial.append({'trial_type': trial_type, 'mean_bold': mean_val})
 
         trial_tidy_df = pd.DataFrame(mean_per_trial)
-        trial_tidy_csv = os.path.join(processed_path, f'{SUBJECT}_{TASK}_mean_bold_per_trial.csv')
+        trial_tidy_csv = os.path.join(processed_path, 'sub-01_task-Classificationprobewithoutfeedback_mean_bold_per_trial.csv')
         trial_tidy_df.to_csv(trial_tidy_csv, index=False)
         logging.info(f"Mean BOLD per trial_type tidy CSV saved: {trial_tidy_csv}")
 

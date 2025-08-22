@@ -1,18 +1,20 @@
 """
 Visualize the preprocessed fMRI time series and model evaluation outputs.
+
 To visualize preprocessed model: 
     - Used matplotlib to generate average signal over time 
 To visualize DecisionTreeClassifer mode: 
     - Used plot_tree to plot model from trained data (kept random_state = 42 so it stays consistent throughout)
-
-Part 3 Additions: 
+To visualize model evaluation outputs:
     - Confusion Matrix to assess model
+To visualize transform outputs:
     - A bar plot of mean signal from each trial type
+To visuliaze brain signal segregation:
     - Brain map visualization 
 
 Run main.py to execute this script.
 """
-
+#Load necessary libraries
 import os
 import pandas as pd
 import numpy as np
@@ -24,9 +26,17 @@ import joblib
 from nilearn import image, plotting
 
 def create_visualizations():
+    """
+    Create visualizations for fMRI data and model evaluation.
+    - Normalized Confusion Matrix
+    - Mean signal over time plot
+    - Decision Tree visualization
+    - Bar plot of mean signal per trial type
+    - Brain map visualization
+    """
     # Load time series (already saved as numpy array in data/processed)
-    X = np.load('data/processed/sub-01_Classificationprobewithoutfeedback_X.npy')  # filtered voxel_vs_time
-    y = pd.read_csv("data/processed/sub-01_Classificationprobewithoutfeedback_y.csv") #Trial labels as CSV (for visualization)
+    X = np.load('data/processed/sub-01_task-Classificationprobewithoutfeedback_X.npy')  # filtered voxel_vs_time
+    y = pd.read_csv("data/processed/sub-01_task-Classificationprobewithoutfeedback_y.csv") #Trial labels as CSV (for visualization)
 
     # Plot average signal over time (linear model)
     mean_signal_over_time = X.mean(axis=0)  # mean across voxels for each timepoint
@@ -43,7 +53,7 @@ def create_visualizations():
     metrics_path = "data/outputs/evaluation_metrics.csv"
     if os.path.exists(metrics_path):
         metrics = pd.read_csv(metrics_path)
-        print("Evaluation metrics:\n", metrics)
+        print(f"Evaluation Metrics: {metrics}")
     else:
         logging.warning(f"Metrics file not found at {metrics_path}")
 
@@ -59,7 +69,7 @@ def create_visualizations():
     plt.close()
     logging.info("Saved Decision Tree plot")
 
-    ##Part 3 Additions: Confusion Matrix, Tidy CSV plot to look at correlations of mean signal to trial type, and brain map visualization using nilearn:
+    #-----------------------------Confusion Matrix, Tidy CSV plot, and brain map visualization-----------------------------:
 
     #Confusion matrix to visualize how well the model fits
     preds_df_path = "data/outputs/test_predictions.csv"
@@ -79,7 +89,7 @@ def create_visualizations():
         logging.warning(f"Test predictions file not found at {preds_df_path}")
 
     #Tidy CSV to plot barplot of trial_type and mean signal for each (from aggregated csv from transform.py)
-    tidy_trial_csv = 'data/processed/sub-01_Classificationprobewithoutfeedback_mean_bold_per_trial.csv'  # From transform.py
+    tidy_trial_csv = 'data/processed/sub-01_task-Classificationprobewithoutfeedback_mean_bold_per_trial.csv'  # From transform.py
     if os.path.exists(tidy_trial_csv):
         tidy_trial_df = pd.read_csv(tidy_trial_csv)
         plt.figure(figsize=(8, 6))
@@ -94,7 +104,7 @@ def create_visualizations():
         logging.warning(f"Trial-type CSV not found at {tidy_trial_csv}")
 
     #Brain map visualization using plot_stat_map:
-    preprocessed_img_path = 'data/processed/sub-01_Classificationprobewithoutfeedback_preprocessed.nii.gz'
+    preprocessed_img_path = 'data/processed/sub-01_task-Classificationprobewithoutfeedback_preprocessed.nii.gz'
     if os.path.exists(preprocessed_img_path):
         mean_img = image.mean_img(preprocessed_img_path)
         plotting.plot_stat_map(mean_img, title="Mean BOLD Activity", output_file="data/outputs/mean_bold_brain_map.png")
@@ -102,5 +112,4 @@ def create_visualizations():
         logging.info("Saved brain map visualization.")
     else:
         logging.warning(f"Preprocessed NIfTI not found at {preprocessed_img_path}")
-
 

@@ -2,9 +2,6 @@
 Evaluate the trained Decision Tree model using accuracy, precision, and recall.
 Save prediction results to data/outputs
 
-Part 3 Addition: 
-    -Saved the trained model using joblib
-    
 Run main.py to execute this script.
 """
 
@@ -17,7 +14,9 @@ import logging
 import joblib #To load the mdoel instead of retraining it every time
 
 def evaluate_model():
-
+    """
+    Evaluate the trained Decision Tree model and save predictions and metrics.
+    """
     logging.info("Starting evaluation of model..")
     # Load predictions from model.py
     outputs_dir = os.path.join("data", "outputs")
@@ -52,6 +51,10 @@ def evaluate_model():
         "precision": precision,
         "recall": recall,
     }
+
+    logging.info(f"Evaluation metrics: Accuracy={accuracy}, Precision={precision}, Recall={recall}")
+
     metrics_path = os.path.join(outputs_dir, "evaluation_metrics.csv")
     pd.DataFrame([metrics]).to_csv(metrics_path, index=False)
+
     logging.info(f"Metrics saved to {metrics_path}")

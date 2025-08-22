@@ -1,10 +1,11 @@
-'''
+"""
 Load all scripts from the etl, analysis, and vis directories.
 This script serves as the main entry point for the ETL and analysis pipeline.
 It imports functions from the respective modules and executes them in sequence.
 
-Part 3 Addition: After changing all scripts, I added logging to run through each part of the code and show the log in pipeline.log
-'''
+Each step us logged to a log file named 'pipeline.log' in the main directory.
+"""
+
 import os
 import logging
 import etl.extract as etl_part1
@@ -17,25 +18,26 @@ import vis.visualizations as visualize
 def main():
 
     #logging inside main()
-    os.makedirs('data/outputs', exist_ok=True)
+
+    base_dir = os.path.dirname(os.path.abspath(__file__)) #main.py directory
+    log_file = os.path.join(base_dir, "pipeline.log") #log file path
+
+    # Configure logging
     logging.basicConfig(
-        filename='data/outputs/pipeline.log',
+        filename=log_file,
         level=logging.INFO,
-        format='%(asctime)s:%(levelname)s:%(message)s'
+        format='%(asctime)s:%(levelname)s:%(message)s',
+        force = True  # Force logging configuration to be applied, useful for re-running the script without restarting the interpreter
     )
 
-    #Define a dynamic folder for flat file loading
-    DATA_ROOT = os.path.join('data', 'raw') #Defines the folder
-    SUBJECT = 'sub-01' #Only looking at one subject for this project
-    TASK = 'Classificationprobewithoutfeedback' #The task we are looking at
 
     #try/except statements and add to log file
     try: 
-        logging.info("Pipeline started")
+        logging.info("Pipeline started for subject: sub-01, task: Classification Probe without Feedback ")
 
     # Extract data
         try:
-            fmri_img, events = etl_part1.extract_data(SUBJECT, TASK) #run this and add to log file with these parameters
+            fMRI_img, events, nii_path, events_path = etl_part1.extract_data() #run this and add to log file with these parameters
             logging.info("Data extracted successfully") #message
         except Exception as e: 
             logging.error(f"Extract step failed: {e}")
@@ -43,7 +45,7 @@ def main():
 
     # Transform data
         try: 
-            X_filtered, y_filtered = etl_part2.transform_data(SUBJECT, TASK)
+            X_filtered, y_filtered = etl_part2.transform_data()
             logging.info("Data transformed successfully")
         except Exception as e: 
             logging.error(f"Transform step failed: {e}")
@@ -51,7 +53,7 @@ def main():
 
     # Load data
         try:
-            X, y = etl_part3.load_data(SUBJECT, TASK)
+            X, y = etl_part3.load_data()
             logging.info("Data loaded successfully")
         except Exception as e:
             logging.error(f'Load step failed: {e}')
@@ -59,7 +61,7 @@ def main():
 
     # Analyze data
         try:
-            clf, X_test, y_test, predictions = analysis_part1.build_model(SUBJECT, TASK)
+            clf, X_test, y_test, predictions = analysis_part1.build_model()
             logging.info("Data model trained successfully")
         except Exception as e:
             logging.error(f"Model training failed: {e}")
