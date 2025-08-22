@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/plumerias/Downloads/Working/INST414/inst414-final-project-Aditi-Kulkarni-1/final"
+VIRTUAL_ENV="/Users/plumerias/Documents/inst414-final-project-Aditi-Kulkarni/final"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

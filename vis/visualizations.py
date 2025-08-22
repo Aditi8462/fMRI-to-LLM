@@ -92,11 +92,13 @@ def create_visualizations():
     tidy_trial_csv = 'data/processed/sub-01_task-Classificationprobewithoutfeedback_mean_bold_per_trial.csv'  # From transform.py
     if os.path.exists(tidy_trial_csv):
         tidy_trial_df = pd.read_csv(tidy_trial_csv)
-        plt.figure(figsize=(8, 6))
+        plt.figure(figsize=(10, 6))
         sns.barplot(x='trial_type', y='mean_bold', data=tidy_trial_df)
         plt.title("Mean BOLD signal per Trial")
         plt.xlabel("Trial Type")
         plt.ylabel("Mean BOLD signal")
+        plt.xticks(rotation=45, ha="right")  # rotate labels 45° and align right
+        plt.tight_layout() #spacing automatically adjusts
         plt.savefig("data/outputs/mean_bold_per_voxel.png")
         plt.close()
         logging.info("Saved tidy CSV plot for mean BOLD signals.")
