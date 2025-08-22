@@ -210,3 +210,5 @@ data/raw/
 *.npy
 *.nii.gz
 
+.DS_Store
+data/.DS_Store
