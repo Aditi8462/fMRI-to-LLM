@@ -1,4 +1,4 @@
-# inst414-final-project-Aditi-Kulkarni
+# LLM-to-fMRI
 Final project for INST414
 
 Project Overview:
