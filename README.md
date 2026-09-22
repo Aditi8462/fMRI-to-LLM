@@ -1,4 +1,4 @@
-# LLM-to-fMRI
+#fMRI-ML model
 Final project for INST414
 
 Project Overview:
